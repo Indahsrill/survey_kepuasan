@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
@@ -17,6 +18,14 @@ class _UploadPageState extends State<UploadPage> {
   String message = "";
   bool onLoading = false;
   final ImagePicker _picker = ImagePicker();
+  final textController = TextEditingController();
+
+  @override
+  void dispose() {
+    // Clean up the controller when the widget is disposed.
+    textController.dispose();
+    super.dispose();
+  }
 
   Future<void> getImageGallery() async {
     final XFile? pickedFile =
@@ -41,9 +50,16 @@ class _UploadPageState extends State<UploadPage> {
   Future<void> upload(File imageFile) async {
     DateTime now = DateTime.now();
     String formatWaktu = DateFormat('yyyyMMddHHmmss').format(now);
-    String kodeDaerah = '1234';
+    String kodeDaerah = textController.text;
     int length = await imageFile.length();
     Uri uri = Uri.parse("http://213.218.240.102/uploadfile");
+
+    if (kodeDaerah == "") {
+      setState(() {
+        message = "Please input area code";
+      });
+      return;
+    }
 
     var stream = http.ByteStream(imageFile.openRead().cast());
     var request = http.MultipartRequest("POST", uri);
@@ -51,7 +67,7 @@ class _UploadPageState extends State<UploadPage> {
       "file",
       stream,
       length,
-      filename: '$kodeDaerah-$formatWaktu.jpg',
+      filename: '$kodeDaerah$formatWaktu.jpg',
     );
 
     request.files.add(multipartFile);
@@ -60,7 +76,7 @@ class _UploadPageState extends State<UploadPage> {
       message = "Uploading...";
     });
     try {
-      var response = await request.send().timeout(const Duration(seconds: 5));
+      var response = await request.send().timeout(const Duration(seconds: 10));
       if (response.statusCode == 200) {
         message = "Survey uploaded successfully!";
       } else {
@@ -95,6 +111,29 @@ class _UploadPageState extends State<UploadPage> {
               padding: const EdgeInsets.all(8.0),
               child: Column(
                 children: [
+                  Row(
+                    children: [
+                      Text(
+                        "Area Code:   ",
+                        style: TextStyle(
+                          fontWeight: FontWeight.w500,
+                          fontSize: 17,
+                        ),
+                      ),
+                      Expanded(
+                        child: TextField(
+                          decoration: const InputDecoration(
+                            hintText: "i.e: 0123",
+                          ),
+                          controller: textController,
+                          keyboardType: TextInputType.number,
+                          inputFormatters: <TextInputFormatter>[
+                            FilteringTextInputFormatter.digitsOnly
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                   Text(message),
                   _imageFile != null
                       ? Expanded(child: Image.file(_imageFile!))
