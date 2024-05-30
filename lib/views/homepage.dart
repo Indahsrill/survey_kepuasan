@@ -16,7 +16,6 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> connectionCheck() async {
     Uri uri = Uri.parse("http://213.218.240.102/");
-    // Uri uri = Uri.parse("http://10.0.2.2:8000");
     var request = http.MultipartRequest("GET", uri);
 
     setState(() {
