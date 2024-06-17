@@ -1,9 +1,23 @@
+import 'package:camera/camera.dart';
+import 'package:face_camera/face_camera.dart';
 import 'package:flutter/material.dart';
-import 'package:kepuasan_pelanggan/views/homepage.dart';
+import 'package:kepuasan_pelanggan/views/home_page.dart';
 
-void main() => runApp(MyApp());
+List<CameraDescription> cameras = [];
+main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  try {
+    cameras = await availableCameras();
+    await FaceCamera.initialize();
+  } on CameraException catch (e) {
+    print("${e.code} ${e.description}");
+  }
+  runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
