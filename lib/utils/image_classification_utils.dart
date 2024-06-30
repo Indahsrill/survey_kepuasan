@@ -25,7 +25,7 @@ import 'package:kepuasan_pelanggan/utils/isolate_inference_utils.dart';
 import 'package:tflite_flutter/tflite_flutter.dart';
 
 class ImageClassificationUtils {
-  static const modelPath = 'assets/emotion_model.tflite';
+  String modelPath = 'assets/emotion_model (3).tflite';
   static const labelsPath = 'assets/emotion_labels.txt';
 
   late final Interpreter interpreter;
@@ -33,6 +33,8 @@ class ImageClassificationUtils {
   late final IsolateInference isolateInference;
   late Tensor inputTensor;
   late Tensor outputTensor;
+
+  ImageClassificationUtils(this.modelPath);
 
   // Load model
   Future<void> _loadModel() async {
@@ -55,18 +57,19 @@ class ImageClassificationUtils {
     }
 
     // Load model from assets
-    interpreter = await Interpreter.fromAsset(modelPath, options: options);
-    // Get tensor input shape [1, 224, 224, 3]
+    interpreter =
+        await Interpreter.fromAsset('assets/$modelPath', options: options);
+    // Get tensor input shape
     inputTensor = interpreter.getInputTensors().first;
-    // Get tensor output shape [1, 1001]
+    // Get tensor output shape
     outputTensor = interpreter.getOutputTensors().first;
 
-    log('Interpreter loaded successfully');
+    // log('Interpreter loaded successfully');
   }
 
   // Load labels from assets
   Future<void> _loadLabels() async {
-    log("Load label...");
+    // log("Load label...");
     final labelTxt = await rootBundle.loadString(labelsPath);
     labels = labelTxt.split('\n');
   }
@@ -80,12 +83,12 @@ class ImageClassificationUtils {
 
   Future<Map<String, double>> _inference(InferenceModel inferenceModel) async {
     ReceivePort responsePort = ReceivePort();
-    log("Send port inference...");
+    // log("Send port inference...");
     isolateInference.sendPort.send(
       inferenceModel..responsePort = responsePort.sendPort,
     );
     // get inference result.
-    log("Wait get inference result...");
+    // log("Wait get inference result...");
     var results = await responsePort.first;
     return results;
   }
@@ -102,7 +105,7 @@ class ImageClassificationUtils {
       inputTensor.shape,
       outputTensor.shape,
     );
-    log("Inferencing camera frame...");
+    // log("Inferencing camera frame...");
     return _inference(isolateModel);
   }
 
@@ -116,12 +119,12 @@ class ImageClassificationUtils {
       inputTensor.shape,
       outputTensor.shape,
     );
-    log("Inferencing image...");
+    // log("Inferencing image...");
     return _inference(isolateModel);
   }
 
   Future<void> close() async {
-    log("Close interpreter...");
+    // log("Close interpreter...");
     isolateInference.close();
   }
 }

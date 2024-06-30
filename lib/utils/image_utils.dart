@@ -24,10 +24,10 @@ class ImageUtils {
   // Converts a [CameraImage] in YUV420 format to [imageLib.Image] in RGB format
   static image_lib.Image? convertCameraImage(CameraImage cameraImage) {
     if (cameraImage.format.group == ImageFormatGroup.yuv420) {
-      log("Convert image from YUV420");
+      // log("Convert image from YUV420");
       return convertYUV420ToImage(cameraImage);
     } else if (cameraImage.format.group == ImageFormatGroup.bgra8888) {
-      log("Convert image from BGRA8888");
+      // log("Convert image from BGRA8888");
       return convertBGRA8888ToImage(cameraImage);
     } else {
       return null;
@@ -41,7 +41,7 @@ class ImageUtils {
         height: cameraImage.planes[0].height!,
         bytes: cameraImage.planes[0].bytes.buffer,
         order: image_lib.ChannelOrder.bgra);
-    log("Finish convert image...");
+    // log("Finish convert image...");
     return img;
   }
 
@@ -94,7 +94,7 @@ class ImageUtils {
         image.setPixelRgb(w, h, r, g, b);
       }
     }
-    log("Finish convert image...");
+    // log("Finish convert image...");
     return image;
   }
 }

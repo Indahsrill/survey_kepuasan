@@ -1,7 +1,7 @@
-import 'package:camera/camera.dart';
+import 'dart:developer';
+
 import 'package:face_camera/face_camera.dart';
 import 'package:flutter/material.dart';
-import 'package:kepuasan_pelanggan/main.dart';
 
 class CameraPage extends StatefulWidget {
   const CameraPage({super.key});
@@ -21,10 +21,10 @@ class _CameraPageState extends State<CameraPage> {
       performanceMode: FaceDetectorMode.accurate,
       imageResolution: ImageResolution.high,
       onCapture: (image) {
-        print("hOHO");
+        // log("hOHO");
       },
       onFaceDetected: (face) {
-        print("Ada wajah!");
+        // log("Ada wajah!");
       },
     );
   }

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:camera/camera.dart';
 import 'package:face_camera/face_camera.dart';
 import 'package:flutter/material.dart';
@@ -10,9 +12,9 @@ main() async {
     cameras = await availableCameras();
     await FaceCamera.initialize();
   } on CameraException catch (e) {
-    print("${e.code} ${e.description}");
+    // log("${e.code} ${e.description}");
   }
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {

@@ -40,6 +40,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   image: ^4.2.0
   face_camera: ^0.1.2
+  fl_chart: ^0.68.0
 
 dev_dependencies:
   flutter_test:
@@ -66,6 +67,10 @@ flutter:
   assets:
     - assets/
     - assets/emotion_model.tflite
+    - assets/emotion_model (0).tflite
+    - assets/emotion_model (1).tflite
+    - assets/emotion_model (2).tflite
+    - assets/emotion_model (3).tflite
     - assets/emotion_labels.txt
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg

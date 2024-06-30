@@ -1,5 +1,7 @@
 import 'dart:convert';
+import 'dart:developer';
 
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 // ignore: depend_on_referenced_packages
 import 'package:http/http.dart' as http;
@@ -32,7 +34,31 @@ class _HomePageState extends State<HomePage> {
   bool onLoading = false;
   bool canContinue = false;
   String? selectedAreaCode;
+  String? selectedModel;
+
   List<DropdownMenuItem> listAreaCode = [];
+  List<DropdownMenuItem> listModel = [
+    const DropdownMenuItem(
+      value: "emotion_model.tflite",
+      child: Text("emotion_model Default"),
+    ),
+    const DropdownMenuItem(
+      value: "emotion_model (0).tflite",
+      child: Text("emotion_model (Acc 50% RGB)"),
+    ),
+    const DropdownMenuItem(
+      value: "emotion_model (1).tflite",
+      child: Text("emotion_model (Acc 50% Grayscale)"),
+    ),
+    const DropdownMenuItem(
+      value: "emotion_model (2).tflite",
+      child: Text("emotion_model (Acc 60% Grayscale)"),
+    ),
+    const DropdownMenuItem(
+      value: "emotion_model (3).tflite",
+      child: Text("emotion_model (Acc 62% Grayscale)"),
+    ),
+  ];
 
   Future<void> connectionCheck() async {
     Uri uri = Uri.parse("http://213.218.240.102/getkodedaerah");
@@ -129,6 +155,7 @@ class _HomePageState extends State<HomePage> {
                                         builder: (context) =>
                                             EmotionDetectionPage(
                                           camera: cameras.last,
+                                          modelPath: selectedModel!,
                                           // areaCode: selectedAreaCode!.toString(),
                                         ),
                                       ),
@@ -147,21 +174,28 @@ class _HomePageState extends State<HomePage> {
                           child: const Text("Try Again"),
                         ),
                         const Text("or"),
+                        DropdownButtonFormField(
+                          items: listModel,
+                          value: selectedModel,
+                          onChanged: (value) {
+                            setState(() {
+                              selectedModel = value!;
+                            });
+                          },
+                        ),
                         ElevatedButton(
-                          onPressed: selectedAreaCode != null
-                              ? () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          EmotionDetectionPage(
-                                        camera: cameras.last,
-                                        // areaCode: selectedAreaCode!.toString(),
-                                      ),
-                                    ),
-                                  );
-                                }
-                              : null,
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => EmotionDetectionPage(
+                                  camera: cameras.last,
+                                  modelPath: selectedModel!,
+                                  // areaCode: selectedAreaCode!.toString(),
+                                ),
+                              ),
+                            );
+                          },
                           child: const Text("Still Continue"),
                         ),
                       ],
